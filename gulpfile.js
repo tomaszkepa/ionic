@@ -847,7 +847,7 @@ gulp.task('publish.npm', function(done) {
 /**
  * Publishes a new tag to npm with a nightly tag.
  */
-gulp.task('publish.nightly', function(done) {
+gulp.task('publish.nightly', ['package', 'build.release'], function(done) {
   var fs = require('fs');
   var spawn = require('child_process').spawn;
   var packageJSON = require('./package.json');
@@ -872,6 +872,7 @@ gulp.task('publish.nightly', function(done) {
     .concat(createUniqueHash())
     .join('-');
 
+  fs.writeFileSync('./package.json', JSON.stringify(packageJSON, null, 2));
   var npmCmd = spawn('npm', ['publish', '--tag=nightly', './dist']);
 
   npmCmd.stdout.on('data', function (data) {
